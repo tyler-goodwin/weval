@@ -42,9 +42,9 @@ pub(crate) fn init(flag: Option<String>) -> anyhow::Result<()> {
     let value = match flag {
         Some(s) => Some(parse_size(&s)?),
         None => match std::env::var(ENV_VAR) {
-            Ok(s) if !s.trim().is_empty() => Some(
-                parse_size(&s).with_context(|| format!("while reading {ENV_VAR}"))?,
-            ),
+            Ok(s) if !s.trim().is_empty() => {
+                Some(parse_size(&s).with_context(|| format!("while reading {ENV_VAR}"))?)
+            }
             _ => None,
         },
     };
