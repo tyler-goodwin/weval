@@ -70,6 +70,7 @@ pub(crate) async fn wizen(
     config.wasm_bulk_memory(true);
     config.wasm_component_model(true);
     config.wasm_component_model_async(true);
+    crate::memory::configure(&mut config);
 
     let engine = Engine::new(&config)?;
 

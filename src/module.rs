@@ -24,6 +24,7 @@ pub(crate) async fn wizen(
 ) -> anyhow::Result<Vec<u8>> {
     let mut config = Config::new();
     config.wasm_bulk_memory(true);
+    crate::memory::configure(&mut config);
     let engine = Engine::new(&config)?;
 
     let mut wasi_ctx = wasmtime_wasi::WasiCtxBuilder::new();

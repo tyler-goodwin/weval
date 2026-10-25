@@ -17,6 +17,7 @@ mod filter;
 mod image;
 mod intrinsics;
 mod liveness;
+mod memory;
 mod module;
 mod state;
 mod stats;
@@ -62,6 +63,13 @@ pub enum Command {
         #[structopt(long = "allow-wasi-http")]
         allow_wasi_http: bool,
 
+        /// Virtual memory to reserve for each linear memory while wizening,
+        /// e.g. `64M` or `1G`. Wasmtime reserves 4GiB by default. Can also be
+        /// set with the WEVAL_MEMORY_RESERVATION environment variable; the flag
+        /// takes precedence.
+        #[structopt(long = "memory-reservation")]
+        memory_reservation: Option<String>,
+
         /// Cache file to use.
         #[structopt(long = "cache")]
         cache: Option<PathBuf>,
@@ -99,29 +107,33 @@ fn main() -> anyhow::Result<()> {
             allow_wasip2,
             allow_wasip3,
             allow_wasi_http,
+            memory_reservation,
             cache,
             cache_ro,
             show_stats,
             output_ir,
             verbose,
-        } => weval(
-            input_module,
-            output_module,
-            wizen,
-            preopens,
-            init_func,
-            keep_init_func,
-            cache,
-            cache_ro,
-            show_stats,
-            output_ir,
-            verbose,
-            WasiOpts {
-                p2: allow_wasip2,
-                p3: allow_wasip3,
-                http: allow_wasi_http,
-            },
-        ),
+        } => {
+            memory::init(memory_reservation)?;
+            weval(
+                input_module,
+                output_module,
+                wizen,
+                preopens,
+                init_func,
+                keep_init_func,
+                cache,
+                cache_ro,
+                show_stats,
+                output_ir,
+                verbose,
+                WasiOpts {
+                    p2: allow_wasip2,
+                    p3: allow_wasip3,
+                    http: allow_wasi_http,
+                },
+            )
+        }
     }
 }
 
