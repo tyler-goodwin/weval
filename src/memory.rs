@@ -1,10 +1,10 @@
 //! Linear memory configuration for the engine used while wizening.
 //!
 //! By default Wasmtime reserves 4GiB of virtual address space for every linear
-//! memory on 64-bit hosts. That is fine for a build machine in isolation, but
-//! it is a problem when the wizening process runs somewhere where address space
-//! or snapshotted mappings are accounted for. This module lets callers shrink
-//! the reservation with `--memory-reservation` or `WEVAL_MEMORY_RESERVATION`.
+//! memory on 64-bit hosts. This is primarily useful for configuring the virtual
+//! address space when running in a resource constrained environment. The
+//! reservation can be overridden with `--memory-reservation` or the
+//! `WEVAL_MEMORY_RESERVATION` environment variable.
 
 use std::sync::OnceLock;
 
